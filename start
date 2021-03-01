@@ -1,0 +1,15 @@
+#!/bin/bash
+
+iptables -P INPUT ACCEPT
+iptables -F
+iptables -A INPUT -i lo -j ACCEPT
+iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+
+#Prerouting> na entrada do pacote
+#DNAT> encaminha esse pacote para o destino 192.168.100.1
+iptables -t nat -A  PREROUTING -d 8.8.8.8 -j DNAT --to-destination 192.168.100.1
+iptables -t nat -A POSTROUTING -s 192.168.100.1 -j SNAT --to-source 8.8.8.8
+
+exec syslogd -n -O -
+
